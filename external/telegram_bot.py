@@ -17,11 +17,19 @@ def send_message(chat_id, msg):
   requests.get('https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}'.format(BOT_KEY, chat_id, msg))
 
 
-if __name__ == '__main__':
+def send_file(chat_id, file_path):
   data = {
-    'chat_id': telegram_ids['kmryu'],
-    'document': open('test.html')
+    'chat_id': chat_id
   }
-  r = requests.post('https://api.telegram.org/bot{}/sendDocument'.format(BOT_KEY), data=data)
-  print(r)
+  f = open(file_path, 'rb')
+  files = {
+    'document': f
+  }
+  response = requests.post('https://api.telegram.org/bot{}/sendDocument'.format(BOT_KEY), data=data, files=files)
+  f.close()
+  return response
 
+
+if __name__ == '__main__':
+  r = send_file(telegram_ids['kmryu'], 'test.zip')
+  print(r)
