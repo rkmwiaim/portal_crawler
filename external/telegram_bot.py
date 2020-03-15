@@ -20,7 +20,8 @@ def send_message(chat_id, msg):
 if __name__ == '__main__':
   data = {
     'chat_id': telegram_ids['kmryu'],
-
+    'document': open('test.html')
   }
-  requests.post('https://api.telegram.org/bot{}/sendDocument')
+  r = requests.post('https://api.telegram.org/bot{}/sendDocument'.format(BOT_KEY), data=data)
+  print(r)
 
