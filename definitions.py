@@ -15,3 +15,4 @@ def get_logger():
 log = get_logger()
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESOURCE_DIR = os.path.join(ROOT_DIR, 'resources')
+ERROR_FILE_DIR = os.path.join(ROOT_DIR, 'error_pages')

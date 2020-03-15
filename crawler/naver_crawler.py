@@ -1,14 +1,17 @@
+import os
 import random
 import re
 import time
 from datetime import datetime
 from datetime import timedelta
-
+import traceback
+import external.telegram_bot as bot
 import requests
 from bs4 import BeautifulSoup
 from functional import seq
 
 from definitions import log
+import definitions
 
 
 class NaverCrawler:
@@ -17,11 +20,27 @@ class NaverCrawler:
 
   def crawl_url(self, url):
     time.sleep(self.sleep_time + random.random())
-
     log.info('start to crawl from url: {}'.format(url))
+
     page_html = requests.get(url).text
-    soup = BeautifulSoup(page_html, 'html.parser')
-    return self.parse_soup(soup)
+    try:
+      soup = BeautifulSoup(page_html, 'html.parser')
+      return self.parse_soup(soup)
+    except:
+      log.error('failed to parse {}'.format(url))
+
+      error_datetime = datetime.now().strftime('%Y%m%d_%H%M%S')
+      error_html_file_path = os.path.join(definitions.ERROR_FILE_DIR, '{}.html'.format(error_datetime))
+      with open(error_html_file_path, 'w') as f:
+        f.write(page_html)
+
+      traces = traceback.format_exc()
+      error_trace_file_path = os.path.join(definitions.ERROR_FILE_DIR, '{}.log'.format(error_datetime))
+      with open(error_trace_file_path, 'w') as f:
+        f.write(traces)
+
+      bot.send_message(bot.telegram_ids['kmryu'], 'failed to parse html')
+      raise
 
   def parse_soup(self, soup):
     article_list = soup.find('ul', class_='type01')

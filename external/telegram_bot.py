@@ -1,6 +1,10 @@
-import requests
 import os
+import zipfile
+from io import BytesIO
+
+import requests
 import yaml
+
 import definitions
 
 with open(os.path.join(definitions.RESOURCE_DIR, 'telegram_conf.yaml')) as f:
@@ -30,6 +34,28 @@ def send_file(chat_id, file_path):
   return response
 
 
+def send_content_zip(chat_id, content, zip_file_name):
+  buff = BytesIO()
+  buff.name = 'error.zip'
+
+  zip_archive = zipfile.ZipFile(buff, mode='w', compression=zipfile.ZIP_DEFLATED)
+  zip_archive.filename = 'zip.zip'
+  zip_archive.writestr('error.txt', content)
+  zip_archive.compression
+  zip_archive.close()
+
+  zip_file_path = os.path.join(definitions.ERROR_FILE_DIR, zip_file_name)
+  with open(zip_file_path, 'wb') as f:
+    f.write(buff.getvalue())
+
+  return send_file(chat_id, zip_file_path)
+
+
 if __name__ == '__main__':
-  r = send_file(telegram_ids['kmryu'], 'test.zip')
-  print(r)
+  # r = send_file(telegram_ids['kmryu'], 'test.zip')
+  # print(r)
+
+  with open('test.html', 'r') as f:
+    content = f.read()
+    r = send_content_zip(telegram_ids['kmryu'], content, 'test.zip')
+    print(r)
