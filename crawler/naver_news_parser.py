@@ -1,6 +1,6 @@
 import re
 from datetime import datetime, timedelta
-
+from definitions import log
 
 class NaverNewsParser:
   def get_article_list(self, soup_root):
@@ -23,7 +23,10 @@ class NaverNewsParser:
       time_str_index = 7
 
     time_str = list(info.children)[time_str_index].strip()
-    return self.format_time(datetime.now(), time_str)
+    now = datetime.now()
+    formatted_time = self.format_time(now, time_str)
+    log.info(f"now: {now}, time string: {time_str}, formatted: {formatted_time}")
+    return formatted_time
 
   def get_anchor(self, article_node):
     return article_node.select('dl > dt > a')[0]
