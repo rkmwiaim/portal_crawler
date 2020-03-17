@@ -14,9 +14,9 @@ import config
 
 
 class Crawler:
-  def __init__(self, name, parser, sleep_time=config.PAGE_CRAWL_TIME_GAP):
+  def __init__(self, name, parser):
     self.name = name
-    self.sleep_time = sleep_time
+    self.sleep_time = config.PAGE_CRAWL_TIME_GAP
     self.parser = parser
 
   def crawl_url(self, url):
@@ -40,7 +40,7 @@ class Crawler:
     poster = self.parser.get_poster(article_node)
     posted_at = self.parser.get_posted_at(article_node)
 
-    return {'title': title, 'url': url, 'poster': poster, 'datetime': posted_at}
+    return {'title': title, 'url': url, 'poster': poster, 'posted_at': posted_at}
 
   def handle_parse_error(self, page_html, url):
     log.error('failed to parse {}'.format(url))

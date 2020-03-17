@@ -17,6 +17,10 @@ class CrawlerTest(unittest.TestCase):
       articles = naver_news_crawler.parse_soup(soup)
       self.assertEqual(articles.size(), 10)
 
+      items = articles.flat_map(lambda d: d.items())
+      items.for_each(self.assertIsNotNone)
+      items.filter(lambda i: isinstance(i, str)).for_each(lambda i: self.assertGreater(i, 0))
+
 
 if __name__ == '__main__':
   unittest.main()
