@@ -2,19 +2,20 @@ import time
 
 from functional import seq
 
-from crawler.naver_crawler import NaverCrawler
+from crawler import crawler_factory
+from definitions import log
 from processor.crawler_data_base import CrawlerDataBase
 from processor.crawling_context_sheet import CrawlingContextSheet
 from processor.crawling_data_sheet import CrawlingDataSheet
-from definitions import log
+import config
 
 crawler_dict = {
-  '네이버뉴스': NaverCrawler
+  '네이버뉴스': crawler_factory.naver_news_crawler
 }
 
 
 class CrawlProcessor:
-  def __init__(self, max_crawl_page=400):
+  def __init__(self, max_crawl_page=config.MAX_CRAWL_PAGE):
     self.data_base = CrawlerDataBase()
     self.max_crawl_page = max_crawl_page
 
@@ -30,7 +31,7 @@ class CrawlProcessor:
     channel_key = context['portal'] + context['channel']
     log.info('start to crawl channel [{}].'.format(context))
 
-    crawler = crawler_dict[channel_key](10)
+    crawler = crawler_dict[channel_key]
     data_sheet = CrawlingDataSheet(context)
     start_url = context['start_url']
     new_articles = self.crawl(int(context['crawl_page']), crawler, start_url)

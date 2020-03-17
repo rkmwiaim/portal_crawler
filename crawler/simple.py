@@ -1,5 +1,20 @@
-from functional import seq
+import traceback
+
+
+def base():
+  try:
+    raise ValueError
+  except:
+    handle_error()
+
+
+
+def handle_error():
+  traces = traceback.format_exc()
+  print('------------------------------')
+  print(traces)
+  print('------------------------------')
+  raise
 
 if __name__ == '__main__':
-  for i in range(400):
-    print(i, i * 10 + 1)
+  base()
