@@ -15,7 +15,7 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
     return spread_sheet_util.num2col(added_col) + row
 
   def append(self, article):
-    data = article.map(lambda a: (a['posted_at'], a['poster'], a['title'], a['url'])).to_list()
+    data = article.map(lambda a: ('', a['posted_at'], a['poster'], a['title'], a['url'])).to_list()
     return super().append(self.range, data)
 
 
