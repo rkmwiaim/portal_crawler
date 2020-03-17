@@ -6,7 +6,7 @@ from crawler import simple
 class SimpleTestSuite(unittest.TestCase):
     """Advanced test cases."""
 
-    def test_thoughts(self):
+    def t2est_thoughts(self):
         self.assertIsNone(simple.simple())
 
 
