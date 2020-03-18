@@ -10,7 +10,8 @@ import config
 
 crawler_dict = {
   '네이버뉴스': crawler_factory.naver_news_crawler,
-  '네이버블로그': crawler_factory.naver_blog_crawler
+  '네이버블로그': crawler_factory.naver_blog_crawler,
+  '네이버카페': crawler_factory.naver_cafe_crawler
 }
 
 contexts = CrawlingContextSheet().get()

@@ -1,8 +1,4 @@
-import re
-from datetime import datetime, timedelta
-
 from crawler.naver_common_parser import *
-from definitions import log
 
 
 class NaverNewsParser:

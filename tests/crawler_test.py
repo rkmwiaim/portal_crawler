@@ -4,7 +4,7 @@ import unittest
 from bs4 import BeautifulSoup
 
 import definitions
-from crawler.crawler_factory import naver_news_crawler, naver_blog_crawler
+from crawler.crawler_factory import *
 
 
 class CrawlerTest(unittest.TestCase):
@@ -14,6 +14,9 @@ class CrawlerTest(unittest.TestCase):
 
   def test_parse_naver_blog(self):
     self.naver_html_test('naver_blog.htm', naver_blog_crawler)
+
+  def test_parse_naver_cafe(self):
+    self.naver_html_test('naver_cafe.htm', naver_cafe_crawler)
 
   def naver_html_test(self, test_file_name, crawler):
     test_file_path = os.path.join(definitions.TEST_RESOURCE_DIR, test_file_name)

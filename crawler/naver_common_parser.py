@@ -17,6 +17,15 @@ def get_url(article_node):
   return get_anchor(article_node)['href']
 
 
+def get_poster(article_node):
+  return article_node.select('dl > dd.txt_block > span > a.txt84')[0]['href']
+
+
+def get_posted_at(article_node):
+  time_str = article_node.select('dl > dd.txt_inline')[0].text
+  return format_time(datetime.now(), time_str)
+
+
 def format_time(now, time_str):
   date_format = '%Y-%m-%d %H:%M:%S'
   if '분 전' in time_str:

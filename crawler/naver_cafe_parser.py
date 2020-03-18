@@ -1,7 +1,7 @@
 from crawler.naver_common_parser import *
 
 
-class NaverBlogParser:
+class NaverCafeParser:
   def get_article_list(self, soup_root):
     return get_article_list(soup_root)
 
