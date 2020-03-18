@@ -9,7 +9,8 @@ from processor.crawling_data_sheet import CrawlingDataSheet
 import config
 
 crawler_dict = {
-  '네이버뉴스': crawler_factory.naver_news_crawler
+  '네이버뉴스': crawler_factory.naver_news_crawler,
+  '네이버블로그': crawler_factory.naver_blog_crawler
 }
 
 contexts = CrawlingContextSheet().get()
@@ -69,7 +70,7 @@ class CrawlProcessor:
       log.info(f'# new urls: {len(new_urls)}')
       new_articles += articles.filter(lambda a: a['url'] in new_urls)
 
-      if i >= min_crawl_page and len(new_urls) == 0:
+      if i >= (min_crawl_page - 1) and len(new_urls) == 0:
         break
 
     return new_articles
