@@ -28,6 +28,8 @@ def get_posted_at(article_node):
 
 def format_time(now, time_str):
   date_format = '%Y-%m-%d %H:%M:%S'
+  if '어제' in time_str:
+    return (now - timedelta(days=1)).strftime(date_format)
   if '분 전' in time_str:
     minute_before = int(re.compile('(\d+)분 전').search(time_str).group(1))
     return (now - timedelta(minutes=minute_before)).strftime(date_format)

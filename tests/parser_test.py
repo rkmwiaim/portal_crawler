@@ -1,7 +1,10 @@
 import unittest
+from datetime import datetime
 
 from crawler.crawler_factory import *
 from tests.test_util import *
+from functional import seq
+import crawler.naver_common_parser as naver_common_parser
 
 
 class ParserTest(unittest.TestCase):
@@ -33,6 +36,20 @@ class ParserTest(unittest.TestCase):
 
   def test_parse_naver_cafe(self):
     self.naver_html_test('naver_cafe.htm', naver_cafe_crawler)
+
+  def test_parse_naver_date_common(self):
+    test_date_str = seq([
+      '어제',
+      '3분 전',
+      '3시간 전',
+      '3일 전',
+      '2020.03.21.'
+    ])
+    test_date_str\
+      .map(lambda dt: naver_common_parser.format_time(datetime.now(), dt))\
+      .for_each(lambda s: self.assertIsNotNone(s) and self.assertGreater(len(s), 0))
+
+  ##################################################################################################################
 
   def naver_html_test(self, test_file_name, crawler):
     soup = file_to_soup(test_file_name)
