@@ -40,7 +40,12 @@ class Crawler:
     poster = self.parser.get_poster(article_node)
     posted_at = self.parser.get_posted_at(article_node)
 
-    return {'title': title, 'url': url, 'poster': poster, 'posted_at': posted_at}
+    parse_result = {'title': title, 'url': url, 'poster': poster, 'posted_at': posted_at}
+    post_processor = getattr(self.parser, "post_process", None)
+    if post_processor:
+      post_processor(article_node, parse_result)
+
+    return parse_result
 
   def handle_parse_error(self, page_html, url):
     log.error('failed to parse {}'.format(url))

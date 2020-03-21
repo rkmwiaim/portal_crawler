@@ -32,3 +32,10 @@ class NaverNewsParser:
 
   def get_poster_node(self, article_node):
     return self.get_article_info(article_node).find('span', class_='_sp_each_source')
+
+  def post_process(self, article_node, parse_result):
+    if article_node.find("span", class_='thmb_play'):
+      parse_result["type"] = 'video'
+    if self.get_article_info(article_node).find('span', class_='newspaper') is not None:
+      parse_result['type'] = 'newspaper'
+
