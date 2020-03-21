@@ -1,7 +1,7 @@
 import time
 
 from functional import seq
-import external.mysql_api as data_base
+import external.mysql_api as mysql_api
 from crawler import crawler_factory
 from definitions import log
 from processor.crawling_context_sheet import CrawlingContextSheet, get_channel_key
@@ -14,24 +14,33 @@ crawler_dict = {
   '네이버카페': crawler_factory.naver_cafe_crawler
 }
 
-contexts = CrawlingContextSheet().get()
-
 
 class CrawlProcessor:
-  def __init__(self, portal, channel):
-    self.data_base = data_base
+  def __init__(self, portal, channel,
+               crawling_context_sheet_class=CrawlingContextSheet,
+               crawling_data_sheet_class=CrawlingDataSheet,
+               data_base=mysql_api
+               ):
+    contexts = crawling_context_sheet_class().get()
     self.max_crawl_page = config.MAX_CRAWL_PAGE
     channel_key = get_channel_key(portal, channel)
+
+    self.crawling_data_sheet_class = crawling_data_sheet_class
+    self.data_base = data_base
 
     log.info(f'Processor channel key: {channel_key}, max crawl page: {self.max_crawl_page}')
 
     self.crawler = crawler_dict.get(channel_key)
-    if self.crawler is None:
-      raise ValueError(f'Crawler for [{channel_key}] has yet defined.')
-
     self.context = contexts.get(channel_key)
+
+    self.check_init()
+
+  def check_init(self):
+    if self.crawler is None:
+      raise ValueError(f'Crawler has yet defined.')
+
     if self.context is None:
-      raise ValueError(f'context for [{channel_key}] has yet defined.')
+      raise ValueError(f'context has yet defined.')
 
   def start(self):
     self.process_context(self.context)
@@ -43,7 +52,7 @@ class CrawlProcessor:
     log.info('start to crawl channel [{}].'.format(context))
 
     crawler = crawler_dict[channel_key]
-    data_sheet = CrawlingDataSheet(context)
+    data_sheet = self.crawling_data_sheet_class(context)
     start_url = context['start_url']
     new_articles = self.crawl(int(context['crawl_page']), crawler, start_url)
     new_articles = new_articles.distinct_by(lambda a: a['url']).sorted(key=lambda d: d['posted_at'])

@@ -24,9 +24,6 @@ class NaverNewsParser:
     time_str = list(info.children)[time_str_index].strip()
     return format_time(datetime.now(), time_str)
 
-  def get_anchor(self, article_node):
-    return get_anchor(article_node)
-
   def get_article_info(self, article_node):
     return article_node.select('dl > dd.txt_inline')[0]
 

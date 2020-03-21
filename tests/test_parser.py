@@ -69,7 +69,3 @@ class ParserTest(unittest.TestCase):
     news_type = articles[0].get('type')
     self.assertIsNotNone(news_type)
     self.assertEqual(news_type, type_name)
-
-
-if __name__ == '__main__':
-  unittest.main()

@@ -1,8 +1,9 @@
 import pymysql
+from functional import seq
+
+def t(i):
+  print(i)
+  return i
 
 if __name__ == '__main__':
-  a = -1
-  if a:
-    print('yes')
-  else:
-    print('no')
+  seq([1,2,3,4,5]).map(t).for_each(print)
