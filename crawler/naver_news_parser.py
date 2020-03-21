@@ -34,8 +34,17 @@ class NaverNewsParser:
     return self.get_article_info(article_node).find('span', class_='_sp_each_source')
 
   def post_process(self, article_node, parse_result):
+    self.set_news_type(article_node, parse_result)
+    self.set_naver_news_url(article_node, parse_result)
+
+  def set_news_type(self, article_node, parse_result):
     if article_node.find("span", class_='thmb_play'):
       parse_result["type"] = 'video'
     if self.get_article_info(article_node).find('span', class_='newspaper') is not None:
       parse_result['type'] = 'newspaper'
 
+  def set_naver_news_url(self, article_node, parse_result):
+    info = self.get_article_info(article_node)
+    naver_news_anchor = info.find('a', class_='_sp_each_url')
+    if naver_news_anchor:
+      parse_result['naver_news_url'] = naver_news_anchor['href']

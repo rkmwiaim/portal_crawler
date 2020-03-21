@@ -4,16 +4,29 @@ from crawler.crawler_factory import *
 from tests.test_util import *
 
 
-class CrawlerTest(unittest.TestCase):
+class ParserTest(unittest.TestCase):
 
   def test_parse_naver_news(self):
     self.naver_html_test('naver_news.htm', naver_news_crawler)
+
+  def test_parse_naver_news_date(self):
+    soup = file_to_soup('naver_news_for_time_str_test.htm')
+    articles = naver_news_crawler.parse_soup(soup)
+    articles.for_each(lambda a: self.assertIsNotNone(a.get('posted_at')))
 
   def test_parse_naver_news_video(self):
     self.naver_news_post_process_test('naver_news_video.htm', 'video')
 
   def test_parse_naver_news_newspaper(self):
     self.naver_news_post_process_test('naver_news_newspaper.htm', 'newspaper')
+
+  def test_parse_naver_news_url(self):
+    soup = file_to_soup('naver_news_for_time_str_test.htm')
+    articles = naver_news_crawler.parse_soup(soup)
+
+    self.assertIsNone(articles[0].get('naver_news_url'))
+    self.assertIsNotNone(articles[1].get('naver_news_url'))
+    self.assertIsNotNone(articles[2].get('naver_news_url'))
 
   def test_parse_naver_blog(self):
     self.naver_html_test('naver_blog.htm', naver_blog_crawler)
@@ -39,6 +52,7 @@ class CrawlerTest(unittest.TestCase):
     news_type = articles[0].get('type')
     self.assertIsNotNone(news_type)
     self.assertEqual(news_type, type_name)
+
 
 if __name__ == '__main__':
   unittest.main()

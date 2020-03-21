@@ -50,8 +50,10 @@ class CrawlProcessor:
 
     log.info(f'# total new articles: {new_articles.size()}')
 
-    new_articles.for_each(self.data_base.insert)
-    data_sheet.append(new_articles)
+    if new_articles.size() > 0:
+      new_articles.for_each(self.data_base.insert)
+      data_sheet.append(new_articles)
+
     log.info(
       f'crawled channel key [{channel_key}] finished. # new channel: {new_articles.size()}, crawling time: {time.time() - context_start_time}')
 

@@ -41,9 +41,8 @@ class Crawler:
     posted_at = self.parser.get_posted_at(article_node)
 
     parse_result = {'title': title, 'url': url, 'poster': poster, 'posted_at': posted_at}
-    post_processor = getattr(self.parser, "post_process", None)
-    if post_processor:
-      post_processor(article_node, parse_result)
+    if getattr(self.parser, "post_process", None):
+      self.parser.post_process(article_node, parse_result)
 
     return parse_result
 
