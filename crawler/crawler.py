@@ -26,7 +26,7 @@ class Crawler:
     page_html = requests.get(url).text
     try:
       root_node = BeautifulSoup(page_html, 'html.parser')
-      return self.parse_soup(root_node)
+      return self.parse_soup(root_node).cache()
     except:
       self.handle_parse_error(page_html, url)
 
@@ -56,5 +56,5 @@ class Crawler:
     error_trace_file_path = os.path.join(definitions.ERROR_FILE_DIR, '{}.log'.format(error_datetime))
     with open(error_trace_file_path, 'w') as f:
       f.write(traces)
-    bot.send_message(bot.telegram_ids['kmryu'], 'failed to parse html')
+    bot.send_message(bot.telegram_ids['kmryu'], f'Error from [portal_crawler]. failed to parse url: {url}')
     raise
