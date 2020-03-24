@@ -17,3 +17,5 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESOURCE_DIR = os.path.join(ROOT_DIR, 'resources')
 ERROR_FILE_DIR = os.path.join(ROOT_DIR, 'error_pages')
 TEST_RESOURCE_DIR = os.path.join(ROOT_DIR, 'tests', 'test_resources')
+
+TIME_FORMAT = '%Y-%m-%d %H:%M:%S'

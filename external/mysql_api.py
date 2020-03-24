@@ -4,6 +4,7 @@ import pymysql
 import yaml
 from functional import seq
 import definitions
+from datetime import datetime
 
 with open(os.path.join(definitions.RESOURCE_DIR, 'mysql_conf.yaml')) as f:
   MYSQL_CONF = yaml.load(f, Loader=yaml.FullLoader)
@@ -11,9 +12,11 @@ with open(os.path.join(definitions.RESOURCE_DIR, 'mysql_conf.yaml')) as f:
 
 def insert(article):
   article = seq(article.items()).map(lambda t: (t[0], t[1].replace("'", "\\\'"))).to_dict()
+  now = datetime.now().strftime(definitions.TIME_FORMAT)
+
   sql = f"""INSERT INTO 
-                article(title, url, poster, posted_at) 
-                VALUES('{article['title']}','{article['url']}','{article['poster']}','{article['posted_at']}')"""
+                article(title, url, poster, posted_at, inserted_at) 
+                VALUES('{article['title']}','{article['url']}','{article['poster']}','{article['posted_at']}', {now})"""
 
   conn = get_conn()
   try:

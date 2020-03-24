@@ -1,5 +1,6 @@
 import re
 from datetime import datetime, timedelta
+import definitions
 
 def get_article_list(soup_root):
   return soup_root.find('ul', class_='type01').find_all('li')
@@ -27,7 +28,7 @@ def get_posted_at(article_node):
 
 
 def format_time(now, time_str):
-  date_format = '%Y-%m-%d %H:%M:%S'
+  date_format = definitions.TIME_FORMAT
   if '어제' in time_str:
     return (now - timedelta(days=1)).strftime(date_format)
   if '분 전' in time_str:
