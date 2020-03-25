@@ -16,7 +16,7 @@ def insert(article):
 
   sql = f"""INSERT INTO 
                 article(title, url, poster, posted_at, inserted_at) 
-                VALUES('{article['title']}','{article['url']}','{article['poster']}','{article['posted_at']}', {now})"""
+                VALUES('{article['title']}','{article['url']}','{article['poster']}','{article['posted_at']}', '{now}')"""
 
   conn = get_conn()
   try:
