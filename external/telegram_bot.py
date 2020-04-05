@@ -52,10 +52,5 @@ def send_content_zip(chat_id, content, zip_file_name):
 
 
 if __name__ == '__main__':
-  # r = send_file(telegram_ids['kmryu'], 'test.zip')
-  # print(r)
-
-  with open('test.html', 'r') as f:
-    content = f.read()
-    r = send_content_zip(telegram_ids['kmryu'], content, 'test.zip')
-    print(r)
+  send_message(telegram_ids['네이버뉴스'], 'test')
+  # print(get_updates())

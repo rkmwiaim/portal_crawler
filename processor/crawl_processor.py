@@ -7,6 +7,7 @@ from definitions import log
 from processor.crawling_context_sheet import CrawlingContextSheet, get_channel_key
 from processor.crawling_data_sheet import CrawlingDataSheet
 import config
+import external.telegram_bot as bot
 
 crawler_dict = {
   '네이버뉴스': crawler_factory.naver_news_crawler,
@@ -48,7 +49,7 @@ class CrawlProcessor:
   def process_context(self, context):
     context_start_time = time.time()
 
-    channel_key = context['portal'] + context['channel']
+    channel_key = get_channel_key(context['portal'], context['channel'])
     log.info('start to crawl channel [{}].'.format(context))
 
     crawler = crawler_dict[channel_key]
@@ -62,6 +63,13 @@ class CrawlProcessor:
     if new_articles.size() > 0:
       new_articles.for_each(self.data_base.insert)
       data_sheet.append(new_articles)
+
+      telegram_group = bot.telegram_ids[channel_key]
+      if telegram_group is not None:
+        msg = self.get_message(context, new_articles)
+        bot.send_message(telegram_group, msg)
+
+      bot.send_message()
 
     log.info(
       f'crawled channel key [{channel_key}] finished. # new channel: {new_articles.size()}, crawling time: {time.time() - context_start_time}')
@@ -86,6 +94,11 @@ class CrawlProcessor:
         break
 
     return new_articles
+
+  def get_message(self, context, articles):
+    channel_key = get_channel_key(context['portal'], context['channel'])
+    urls = '\n'.join(articles.map(lambda d: d['url']).to_list())
+    return f"crawled new [{channel_key}] articles. #articles: {articles.size()}\n{urls}"
 
 
 if __name__ == '__main__':

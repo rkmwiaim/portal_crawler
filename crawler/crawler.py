@@ -56,5 +56,5 @@ class Crawler:
     error_trace_file_path = os.path.join(definitions.ERROR_FILE_DIR, '{}.log'.format(error_datetime))
     with open(error_trace_file_path, 'w') as f:
       f.write(traces)
-    bot.send_message(bot.telegram_ids['kmryu'], f'Error from [portal_crawler]. failed to parse url: {url}')
+    bot.send_message(bot.telegram_ids['error_log'], f'Error from [portal_crawler]. failed to parse url: {url}')
     raise
