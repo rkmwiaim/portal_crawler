@@ -28,6 +28,7 @@ def get_posted_at(article_node):
 
 
 def format_time(now, time_str):
+  time_str = time_str.strip()
   date_format = definitions.TIME_FORMAT
   if '어제' in time_str:
     return (now - timedelta(days=1)).strftime(date_format)

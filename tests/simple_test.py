@@ -1,21 +1,7 @@
-import pymysql
-from functional import seq
-
-
-def t(i):
-  raise ValueError()
-  return i
-
-
-def main():
-  # result = seq([1, 2, 3, 4, 5]).map(t)
-  result = map(lambda i: t(i), [1,2,3,4,5])
-  return result
-
+from crawler import crawler_factory, naver_common_parser
+from datetime import datetime
 
 if __name__ == '__main__':
-  try:
-    r = main()
-    print(list(r))
-  except:
-    print('error!')
+  date_str = '2020.04.06. '
+  result = naver_common_parser.format_time(datetime.now(), date_str)
+  print(result)

@@ -57,15 +57,13 @@ def get_conn():
 
 
 if __name__ == '__main__':
-  a = {
-    'title': '\\\'코로나19\\\' 비상 속 군산보건소 상황실 전화 1시간 \\\'먹통\\\'',
-    'url': 'test_url3',
-    'poster': '테스터',
-    'posted_at': '2020-03-18 00:54:00'
-  }
-  insert(a)
+  # a = {
+  #   'title': '\\\'코로나19\\\' 비상 속 군산보건소 상황실 전화 1시간 \\\'먹통\\\'',
+  #   'url': 'test_url3',
+  #   'poster': '테스터',
+  #   'posted_at': '2020-03-18 00:54:00'
+  # }
+  # insert(a)
   r = select_all()
   print(r)
-  # r = check_urls(set(['test_url', 'test_url2', 'a', 'b']))
-  # for i in r:
-  #   print(i)
+
