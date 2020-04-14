@@ -69,8 +69,6 @@ class CrawlProcessor:
         msg = self.get_message(context, new_articles)
         bot.send_message(telegram_group, msg)
 
-      bot.send_message()
-
     log.info(
       f'crawled channel key [{channel_key}] finished. # new channel: {new_articles.size()}, crawling time: {time.time() - context_start_time}')
 
