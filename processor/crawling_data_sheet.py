@@ -26,6 +26,8 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
 
     if channel_key == '네이버뉴스':
       transformed = self.transform_naver_news(transformed, a)
+    if channel_key == '네이버실시간검색':
+      transformed = self.transform_naver_realtime(transformed, a)
 
     return transformed
 
@@ -39,6 +41,9 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
       transformed.append(a['type'])
 
     return transformed
+
+  def transform_naver_realtime(self, transformed, a):
+    return ['', a['posted_at'], a['poster'], a['title'], a['realtime_type'], a['realtime_url']]
 
 
 if __name__ == '__main__':

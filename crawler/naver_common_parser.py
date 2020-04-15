@@ -32,7 +32,10 @@ def format_time(now, time_str):
   date_format = definitions.TIME_FORMAT
   if '어제' in time_str:
     return (now - timedelta(days=1)).strftime(date_format)
-  if '분 전' in time_str:
+  elif '초 전' in time_str:
+    second_before = int(re.compile('(\d+)초 전').search(time_str).group(1))
+    return (now - timedelta(seconds=second_before)).strftime(date_format)
+  elif '분 전' in time_str:
     minute_before = int(re.compile('(\d+)분 전').search(time_str).group(1))
     return (now - timedelta(minutes=minute_before)).strftime(date_format)
   elif '시간 전' in time_str:

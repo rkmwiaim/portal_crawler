@@ -18,7 +18,12 @@ def get_updates():
 
 
 def send_message(chat_id, msg):
-  requests.get('https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}'.format(BOT_KEY, chat_id, msg))
+  data = {
+    'chat_id': chat_id,
+    'text': msg
+  }
+  return requests.post('https://api.telegram.org/bot{}/sendMessage'.format(BOT_KEY), data=data)
+  # requests.get('https://api.telegram.org/bot{}/sendMessage?chat_id={}&text={}'.format(BOT_KEY, chat_id, msg))
 
 
 def send_file(chat_id, file_path):
@@ -52,5 +57,6 @@ def send_content_zip(chat_id, content, zip_file_name):
 
 
 if __name__ == '__main__':
-  send_message(telegram_ids['네이버뉴스'], 'test')
+  res = send_message(telegram_ids['kmryu'], 'crawled new [abc] articles. #articles: 10\na=rea*n.img&r=&i=9015809d_00000004000000007D0055CA&ps=&nd=&u=\n2')
+  print(res)
   # print(get_updates())

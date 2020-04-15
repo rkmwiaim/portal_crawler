@@ -12,7 +12,8 @@ import external.telegram_bot as bot
 crawler_dict = {
   '네이버뉴스': crawler_factory.naver_news_crawler,
   '네이버블로그': crawler_factory.naver_blog_crawler,
-  '네이버카페': crawler_factory.naver_cafe_crawler
+  '네이버카페': crawler_factory.naver_cafe_crawler,
+  '네이버실시간검색': crawler_factory.naver_realtime_crawler
 }
 
 
@@ -22,7 +23,7 @@ class CrawlProcessor:
                crawling_data_sheet_class=CrawlingDataSheet,
                data_base=mysql_api
                ):
-    contexts = crawling_context_sheet_class().get()
+    context_dict = crawling_context_sheet_class().get()
     self.max_crawl_page = config.MAX_CRAWL_PAGE
     channel_key = get_channel_key(portal, channel)
 
@@ -32,7 +33,7 @@ class CrawlProcessor:
     log.info(f'Processor channel key: {channel_key}, max crawl page: {self.max_crawl_page}')
 
     self.crawler = crawler_dict.get(channel_key)
-    self.context = contexts.get(channel_key)
+    self.contexts = context_dict.get(channel_key)
 
     self.check_init()
 
@@ -40,11 +41,12 @@ class CrawlProcessor:
     if self.crawler is None:
       raise ValueError(f'Crawler has yet defined.')
 
-    if self.context is None:
+    if self.contexts is None or len(self.contexts) == 0:
       raise ValueError(f'context has yet defined.')
 
   def start(self):
-    self.process_context(self.context)
+    for context in self.contexts:
+      self.process_context(context)
 
   def process_context(self, context):
     context_start_time = time.time()
@@ -81,6 +83,8 @@ class CrawlProcessor:
       url = start_url + '&start={}'.format(start_index)
       articles = crawler.crawl_url(url)
       urls = articles.map(lambda d: d['url']).to_set()
+      if len(urls) == 0: continue
+
       checked_urls = self.data_base.check_urls(urls)
       checked_count += len(checked_urls)
 
@@ -96,7 +100,11 @@ class CrawlProcessor:
   def get_message(self, context, articles):
     channel_key = get_channel_key(context['portal'], context['channel'])
     urls = '\n'.join(articles.map(lambda d: d['url']).to_list())
-    return f"crawled new [{channel_key}] articles. #articles: {articles.size()}\n{urls}"
+
+    if channel_key == '네이버실시간검색':
+      urls = '\n'.join(articles.map(lambda d: d['title'][:20]).to_list())
+
+    return f"crawled new [{channel_key}] articles. num articles: {articles.size()}\n{urls}"
 
 
 if __name__ == '__main__':
