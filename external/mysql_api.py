@@ -53,7 +53,7 @@ def get_conn():
   return pymysql.connect(host=MYSQL_CONF['host'],
                          port=MYSQL_CONF['port'],
                          user=MYSQL_CONF['user'], password=MYSQL_CONF['password'],
-                         db=MYSQL_CONF['db'], charset='utf8')
+                         db=MYSQL_CONF['db'], charset='utf8mb4')
 
 
 if __name__ == '__main__':
@@ -66,4 +66,3 @@ if __name__ == '__main__':
   # insert(a)
   r = select_all()
   print(r)
-
