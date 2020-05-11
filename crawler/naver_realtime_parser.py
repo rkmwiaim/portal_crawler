@@ -33,6 +33,7 @@ class NaverRealtimeParser:
   def post_process(self, article_node, parse_result):
     parse_result['realtime_type'] = self.get_realtime_type(article_node)
     parse_result['realtime_url'] = self.get_realtime_url(article_node)
+    parse_result['realtime_post_title'] = self.get_realtime_post_title(article_node)
 
   def get_realtime_type(self, article_node):
     thumb_img = article_node.select('div.thumb > a > img')
@@ -48,3 +49,10 @@ class NaverRealtimeParser:
       return content_node['data-src']
     else:
       return content_node['href']
+
+  def get_realtime_post_title(self, article_node):
+    post_title_node = article_node.find('a', class_='info_tit')
+    if post_title_node is None:
+      return ''
+    else:
+      return post_title_node.text
