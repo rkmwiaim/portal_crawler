@@ -81,7 +81,7 @@ class SpreadSheetApi:
     }
     return self.spreadsheet_resource.values()\
       .append(spreadsheetId=self.spreadsheet_id,
-              valueInputOption='RAW',
+              valueInputOption='USER_ENTERED',
               insertDataOption='INSERT_ROWS',
               body=body,
               range=range
