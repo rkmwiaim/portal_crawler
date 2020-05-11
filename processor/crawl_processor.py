@@ -66,13 +66,27 @@ class CrawlProcessor:
       new_articles.for_each(self.data_base.insert)
       data_sheet.append(new_articles)
 
-      telegram_group = bot.telegram_ids[channel_key]
-      if telegram_group is not None:
-        msg = self.get_message(context, new_articles)
-        bot.send_message(telegram_group, msg)
+      self.send_telegram_msg(channel_key, context, new_articles)
 
     log.info(
       f'crawled channel key [{channel_key}] finished. # new channel: {new_articles.size()}, crawling time: {time.time() - context_start_time}')
+
+  def send_telegram_msg(self, channel_key, context, new_articles):
+    telegram_group = bot.telegram_ids[channel_key]
+    if telegram_group is not None:
+      if channel_key == '네이버실시간검색':
+        new_articles.for_each(lambda a: self.send_realtime_msg(telegram_group, a))
+      else:
+        msg = self.get_message(context, new_articles)
+        bot.send_message(telegram_group, msg)
+
+  def send_realtime_msg(self, telegram_group, article):
+    realtime_type = article['realtime_type']
+    poster = article['poster']
+    title = article['title']
+
+    msg = f'[{realtime_type}]\n{poster} : {title}'
+    bot.send_message(telegram_group, msg)
 
   def crawl(self, min_crawl_page, crawler, start_url):
     new_articles = seq([])
@@ -100,9 +114,6 @@ class CrawlProcessor:
   def get_message(self, context, articles):
     channel_key = get_channel_key(context['portal'], context['channel'])
     urls = '\n'.join(articles.map(lambda d: d['url']).to_list())
-
-    if channel_key == '네이버실시간검색':
-      urls = '\n'.join(articles.map(lambda d: d['title'][:20]).to_list())
 
     return f"crawled new [{channel_key}] articles. num articles: {articles.size()}\n{urls}"
 
