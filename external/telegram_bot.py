@@ -57,6 +57,6 @@ def send_content_zip(chat_id, content, zip_file_name):
 
 
 if __name__ == '__main__':
-  res = send_message(telegram_ids['kmryu'], 'crawled new [abc] articles. #articles: 10\na=rea*n.img&r=&i=9015809d_00000004000000007D0055CA&ps=&nd=&u=\n2')
+  res = send_message(telegram_ids['kmryu'], 'test message from bot')
   print(res)
   # print(get_updates())

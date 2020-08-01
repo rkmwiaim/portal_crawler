@@ -3,7 +3,6 @@ from __future__ import print_function
 import os.path
 import pickle
 
-from functional import seq
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
@@ -42,33 +41,6 @@ class SpreadSheetApi:
     # Call the Sheets API
     return service.spreadsheets()
 
-  def get_sheets(self):
-    spreadsheet_meta = self.spreadsheet_resource.get(spreadsheetId=self.spreadsheet_id).execute()
-    sheets_seq = seq(spreadsheet_meta['sheets'])
-    return sheets_seq.map(lambda d: d['properties'])
-
-  def get_sheet_titles(self):
-    spreadsheet_meta = self.spreadsheet_resource.get(spreadsheetId=self.spreadsheet_id).execute()
-    sheets_seq = seq(spreadsheet_meta['sheets'])
-    return sheets_seq.map(lambda d: d['properties']['title']).to_list()
-
-  def add_sheet(self, sheet_name):
-    update_body = {
-      'requests': [
-        {
-          'addSheet': {
-            'properties': {
-              'title': sheet_name
-            }
-          }
-        }
-      ]
-    }
-    return self.spreadsheet_resource.batchUpdate(spreadsheetId=self.spreadsheet_id, body=update_body).execute()
-
-  def get_sheet_id_from_response(self, add_sheet_response):
-    return pydash.get(add_sheet_response, 'replies.0.addSheet.properties.sheetId')
-
   def get(self, range):
     get_result = self.spreadsheet_resource.values().batchGet(spreadsheetId=self.spreadsheet_id, ranges=range).execute()
     return pydash.get(get_result, 'valueRanges.0.values')
@@ -79,46 +51,11 @@ class SpreadSheetApi:
       "majorDimension": "ROWS",
       "values": data,
     }
-    return self.spreadsheet_resource.values()\
+    return self.spreadsheet_resource.values() \
       .append(spreadsheetId=self.spreadsheet_id,
               valueInputOption='USER_ENTERED',
               insertDataOption='INSERT_ROWS',
               body=body,
               range=range
-              )\
+              ) \
       .execute()
-
-  def batch_append(self, sheet_id, data):
-    rows = self.get_rows(data)
-
-    body = {
-      'requests': [
-        {
-          'appendCells':
-            {
-              "sheetId": sheet_id,
-              "rows": rows,
-              "fields": '*'
-            }
-        }
-      ]
-    }
-    return self.spreadsheet_resource.batchUpdate(spreadsheetId=self.spreadsheet_id, body=body).execute()
-
-  def get_rows(self, data):
-    rows = []
-    for row in data:
-      rows.append(
-        {
-          'values':
-            [
-              {'userEnteredValue': {'stringValue': c}} for c in row
-            ]
-        }
-      )
-    return rows
-
-if __name__ == '__main__':
-  api = SpreadSheetApi('1se6gCkUgE6kajK_14jpVHPhOAbUt2dQ7aF74Oyw16KE')
-  sheets = api.get_sheets()
-  print(sheets)
