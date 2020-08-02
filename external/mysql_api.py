@@ -15,8 +15,8 @@ def insert(article):
   now = datetime.now().strftime(definitions.TIME_FORMAT)
 
   sql = f"""INSERT INTO 
-                article(title, url, poster, posted_at, inserted_at) 
-                VALUES('{article['title']}','{article['url']}','{article['poster']}','{article['posted_at']}', '{now}')"""
+                article(site, channel, title, url, poster, posted_at, inserted_at) 
+                VALUES('{article['site']}, {article['channel']}, {article['title']}','{article['url']}','{article['poster']}','{article['posted_at']}', '{now}')"""
 
   conn = get_conn()
   try:

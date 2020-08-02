@@ -14,10 +14,12 @@ import config
 
 
 class Crawler:
-  def __init__(self, name, parser):
+  def __init__(self, name, parser, site, channel):
     self.name = name
     self.sleep_time = config.PAGE_CRAWL_TIME_GAP
     self.parser = parser
+    self.site = site
+    self.channel = channel
 
   def crawl_url(self, url):
     time.sleep(self.sleep_time + random.random())
@@ -40,7 +42,8 @@ class Crawler:
     poster = self.parser.get_poster(article_node)
     posted_at = self.parser.get_posted_at(article_node)
 
-    parse_result = {'title': title, 'url': url, 'poster': poster, 'posted_at': posted_at}
+    parse_result = {'title': title, 'url': url, 'poster': poster,
+                    'posted_at': posted_at, 'site': self.site, 'channel': self.channel}
     if getattr(self.parser, "post_process", None):
       self.parser.post_process(article_node, parse_result)
 
