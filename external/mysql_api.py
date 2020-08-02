@@ -12,12 +12,12 @@ with open(os.path.join(definitions.RESOURCE_DIR, 'mysql_conf.yaml')) as f:
 
 
 def insert(article):
-  article = seq(article.items()).map(lambda t: (t[0], t[1].replace("'", "\\\'"))).to_dict()
+  article = seq(article.items()).map(lambda t: (t[0], t[1].replace("'", "''"))).to_dict()
   now = datetime.now().strftime(definitions.TIME_FORMAT)
 
   sql = f"""INSERT INTO 
-                article(site, channel, title, url, poster, posted_at, inserted_at, json) 
-                VALUES(
+                article (site, channel, title, url, poster, posted_at, inserted_at, json) 
+                VALUES (
                   '{article['site']}',
                   '{article['channel']}',
                   '{article['title']}',
@@ -67,12 +67,16 @@ def get_conn():
 
 
 if __name__ == '__main__':
-  # a = {
-  #   'title': '\\\'코로나19\\\' 비상 속 군산보건소 상황실 전화 1시간 \\\'먹통\\\'',
-  #   'url': 'test_url3',
-  #   'poster': '테스터',
-  #   'posted_at': '2020-03-18 00:54:00'
-  # }
-  # insert(a)
-  r = select_all()
-  print(r)
+  # 'poster': '⚡️전기팔이소년⚡️',
+  a = {
+    'title': "  '코로나19' 비상 속 군산보건소 상황실 전화 1시간 '먹통'",
+    'url': 'test_url3',
+
+    'poster': '⚡️전기팔이소년⚡️',
+    'posted_at': '2020-03-18 00:54:00',
+    'site': 'test',
+    'channel': 'test'
+  }
+  insert(a)
+  # r = select_all()
+  # print(r)
