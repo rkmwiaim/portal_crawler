@@ -13,7 +13,8 @@ crawler_dict = {
   '네이버뉴스': crawler_factory.naver_news_crawler,
   '네이버블로그': crawler_factory.naver_blog_crawler,
   '네이버카페': crawler_factory.naver_cafe_crawler,
-  '네이버실시간검색': crawler_factory.naver_realtime_crawler
+  '네이버실시간검색': crawler_factory.naver_realtime_crawler,
+  '기타커뮤니티': crawler_factory.aagag_mirror_parser
 }
 
 

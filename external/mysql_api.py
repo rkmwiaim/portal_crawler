@@ -5,6 +5,7 @@ import yaml
 from functional import seq
 import definitions
 from datetime import datetime
+import json
 
 with open(os.path.join(definitions.RESOURCE_DIR, 'mysql_conf.yaml')) as f:
   MYSQL_CONF = yaml.load(f, Loader=yaml.FullLoader)
@@ -15,8 +16,17 @@ def insert(article):
   now = datetime.now().strftime(definitions.TIME_FORMAT)
 
   sql = f"""INSERT INTO 
-                article(site, channel, title, url, poster, posted_at, inserted_at) 
-                VALUES('{article['site']}, {article['channel']}, {article['title']}','{article['url']}','{article['poster']}','{article['posted_at']}', '{now}')"""
+                article(site, channel, title, url, poster, posted_at, inserted_at, json) 
+                VALUES(
+                  '{article['site']}',
+                  '{article['channel']}',
+                  '{article['title']}',
+                  '{article['url']}',
+                  '{article['poster']}',
+                  '{article['posted_at']}',
+                  '{now}',
+                  '{json.dumps(article)}')
+  """
 
   conn = get_conn()
   try:
