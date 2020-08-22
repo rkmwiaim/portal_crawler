@@ -1,12 +1,9 @@
 from external import spread_sheet_api
 from functional import seq
+from processor.processor_util import get_channel_key
 
 SPREADSHEET_ID = '1se6gCkUgE6kajK_14jpVHPhOAbUt2dQ7aF74Oyw16KE'
 CONTEXT_RANGE = '채널!A2:I'
-
-
-def get_channel_key(portal, channel):
-  return portal + channel
 
 
 class CrawlingContextSheet(spread_sheet_api.SpreadSheetApi):

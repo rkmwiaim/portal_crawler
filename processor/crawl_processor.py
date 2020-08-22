@@ -1,13 +1,15 @@
 import time
 
 from functional import seq
-import external.mysql_api as mysql_api
-from crawler import crawler_factory
-from definitions import log
-from processor.crawling_context_sheet import CrawlingContextSheet, get_channel_key
-from processor.crawling_data_sheet import CrawlingDataSheet
+
 import config
 import external.telegram_bot as bot
+from crawler import crawler_factory
+from definitions import log
+from processor.mysql import default_mysql
+from processor.processor_util import get_channel_key
+from processor.crawling_context_sheet import CrawlingContextSheet
+from processor.crawling_data_sheet import CrawlingDataSheet
 
 crawler_dict = {
   '네이버뉴스': crawler_factory.naver_news_crawler,
@@ -22,7 +24,7 @@ class CrawlProcessor:
   def __init__(self, portal, channel,
                crawling_context_sheet_class=CrawlingContextSheet,
                crawling_data_sheet_class=CrawlingDataSheet,
-               data_base=mysql_api
+               data_base=default_mysql
                ):
     context_dict = crawling_context_sheet_class().get()
     self.max_crawl_page = config.MAX_CRAWL_PAGE

@@ -1,6 +1,6 @@
 from external import spread_sheet_api
 import processor.spread_sheet_util as spread_sheet_util
-from processor import crawling_context_sheet
+from processor.processor_util import get_channel_key
 
 
 class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
@@ -22,7 +22,7 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
 
   def transform_article(self, a):
     transformed = self.transform_article_default(a)
-    channel_key = crawling_context_sheet.get_channel_key(self.context['portal'], self.context['channel'])
+    channel_key = get_channel_key(self.context['portal'], self.context['channel'])
 
     if channel_key == '네이버뉴스':
       transformed = self.transform_naver_news(transformed, a)
