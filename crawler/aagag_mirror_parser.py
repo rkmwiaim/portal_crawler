@@ -31,6 +31,11 @@ class AagagMirrorParser:
         posted_at = re.sub('\[.*?\]$', '', posted_at_raw)
         return datetime.strptime(posted_at, '%Y-%m-%d %H:%M').strftime(definitions.TIME_FORMAT)
 
+    def post_process(self, article_node, parse_result: dict):
+        community_name = seq(article_node.find('div', class_='rank')['class'])\
+            .find(lambda c: c.startswith('bc_'))\
+            .strip('bc_')
+        parse_result['community'] = community_name
 
 if __name__ == '__main__':
     parser = AagagMirrorParser()
@@ -38,4 +43,4 @@ if __name__ == '__main__':
 
     soup = BeautifulSoup(requests.get(url).text, 'html.parser')
     articles = parser.get_article_list(soup)
-    articles.take(3).map(parser.get_posted_at).for_each(print)
+    articles.take(3).map(lambda a: parser.post_process(a, {})).for_each(print)

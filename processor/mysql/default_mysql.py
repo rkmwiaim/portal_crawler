@@ -5,6 +5,7 @@ from functional import seq
 
 import definitions
 from external import mysql_api
+from models.types import Stream
 
 
 def insert(article):
@@ -27,10 +28,15 @@ def insert(article):
     return mysql_api.update(sql)
 
 
-def check_urls(urls) -> list:
+def filter_non_exist(articles) -> Stream[dict]:
+    urls = articles.map(lambda d: d['url']).to_set()
+
     joined_url = ','.join(seq(urls).map(lambda s: f"'{s}'"))
     sql = f"SELECT url FROM article WHERE url IN ({joined_url})"
-    return seq(mysql_api.select(sql)).map(lambda d: d['url']).set()
+    checked_urls = seq(mysql_api.select(sql)).map(lambda d: d['url']).set()
+
+    new_urls = urls - checked_urls
+    return articles.filter(lambda a: a['url'] in new_urls)
 
 
 if __name__ == '__main__':

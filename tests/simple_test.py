@@ -1,30 +1,17 @@
-from typing import Iterator
-from typing import TypeVar
+a = set([
+    {'a': 1, 'b': 1, 'c': 1},
+    {'a': 1, 'b': 2, 'c': 1},
+    {'a': 1, 'b': 3, 'c': 1},
+    {'a': 1, 'b': 4, 'c': 1},
+    {'a': 2, 'b': 1, 'c': 1}
+])
 
-from functional.pipeline import Sequence
-from functional import seq
+b = set([
+    {'a': 1, 'b': 1, 'c': 1},
+    {'a': 1, 'b': 2, 'c': 1},
+    {'a': 1, 'b': 3, 'c': 1},
+    {'a': 1, 'b': 4, 'c': 1},
+    {'a': 2, 'b': 1, 'c': 1}
+])
 
-Item = TypeVar('item')
-class Stream(Sequence, Iterator[Item]):
-    pass
-
-
-
-
-def get_seq() -> Stream[dict]:
-    try:
-        d = {'a': 1, 'b': 2}
-        a = [d, d, d]
-        # a = ['a', 'b', 'c']
-        # return a
-        raise ValueError()
-        return seq(a)
-    except:
-        pass
-
-
-r = get_seq()
-print(r)
-print(type(r))
-
-
+print(a)

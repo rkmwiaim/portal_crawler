@@ -95,23 +95,21 @@ class CrawlProcessor:
 
   def crawl(self, min_crawl_page, crawler, start_url) -> Stream[dict]:
     new_articles = seq([])
-    checked_count = 0
 
     for i in range(0, self.max_crawl_page):
       start_index = i * 10 + 1
       url = start_url + '&start={}'.format(start_index)
       articles = crawler.crawl_url(url)
-      urls = articles.map(lambda d: d['url']).to_set()
-      if len(urls) == 0: continue
 
-      checked_urls = self.data_base.check_urls(urls)
-      checked_count += len(checked_urls)
+      if articles.size() == 0:
+        continue
 
-      new_urls = urls - checked_urls
-      log.info(f'# new urls: {len(new_urls)}')
-      new_articles += articles.filter(lambda a: a['url'] in new_urls)
+      curr_page_new_articles = self.data_base.filter_non_exist(articles)
+      log.info(f'# new articles in page: {curr_page_new_articles}')
 
-      if i >= (min_crawl_page - 1) and len(new_urls) == 0:
+      new_articles += curr_page_new_articles
+
+      if i >= (min_crawl_page - 1) and curr_page_new_articles.size() == 0:
         break
 
     return new_articles
@@ -121,8 +119,3 @@ class CrawlProcessor:
     urls = '\n'.join(articles.map(lambda d: d['url']).to_list())
 
     return f"crawled new [{channel_key}] articles. num articles: {articles.size()}\n{urls}"
-
-
-if __name__ == '__main__':
-  processor = CrawlProcessor()
-  processor.start()
