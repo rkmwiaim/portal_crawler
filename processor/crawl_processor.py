@@ -10,6 +10,8 @@ from processor.mysql import default_mysql
 from processor.processor_util import get_channel_key
 from processor.crawling_context_sheet import CrawlingContextSheet
 from processor.crawling_data_sheet import CrawlingDataSheet
+from models.types import Stream
+
 
 crawler_dict = {
   '네이버뉴스': crawler_factory.naver_news_crawler,
@@ -91,7 +93,7 @@ class CrawlProcessor:
     msg = f'[{realtime_type}]\n{poster} : {title}'
     bot.send_message(telegram_group, msg)
 
-  def crawl(self, min_crawl_page, crawler, start_url):
+  def crawl(self, min_crawl_page, crawler, start_url) -> Stream[dict]:
     new_articles = seq([])
     checked_count = 0
 

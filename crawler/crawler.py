@@ -3,14 +3,16 @@ import random
 import time
 import traceback
 from datetime import datetime
-import external.telegram_bot as bot
+
 import requests
 from bs4 import BeautifulSoup
-
-import definitions
-from definitions import log
 from functional import seq
+
 import config
+import definitions
+import external.telegram_bot as bot
+from definitions import log
+from models.types import Stream
 
 
 class Crawler:
@@ -21,7 +23,7 @@ class Crawler:
     self.site = site
     self.channel = channel
 
-  def crawl_url(self, url):
+  def crawl_url(self, url) -> Stream[dict]:
     time.sleep(self.sleep_time + random.random())
     log.info('start to crawl from url: {}'.format(url))
 
@@ -32,11 +34,11 @@ class Crawler:
     except:
       self.handle_parse_error(page_html, url)
 
-  def parse_soup(self, soup):
+  def parse_soup(self, soup) -> Stream[dict]:
     article_list = self.parser.get_article_list(soup)
     return seq(article_list).map(self.parse_article)
 
-  def parse_article(self, article_node):
+  def parse_article(self, article_node) -> dict:
     title = self.parser.get_title(article_node)
     url = self.parser.get_url(article_node)
     poster = self.parser.get_poster(article_node)
