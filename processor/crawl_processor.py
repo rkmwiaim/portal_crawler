@@ -6,7 +6,7 @@ import config
 import external.telegram_bot as bot
 from crawler import crawler_factory
 from definitions import log
-from processor.mysql import default_mysql
+from processor.mysql import database_factory
 from processor.processor_util import get_channel_key
 from processor.crawling_context_sheet import CrawlingContextSheet
 from processor.crawling_data_sheet import CrawlingDataSheet
@@ -25,15 +25,13 @@ crawler_dict = {
 class CrawlProcessor:
   def __init__(self, portal, channel,
                crawling_context_sheet_class=CrawlingContextSheet,
-               crawling_data_sheet_class=CrawlingDataSheet,
-               data_base=default_mysql
-               ):
+               crawling_data_sheet_class=CrawlingDataSheet):
     context_dict = crawling_context_sheet_class().get()
     self.max_crawl_page = config.MAX_CRAWL_PAGE
     channel_key = get_channel_key(portal, channel)
 
     self.crawling_data_sheet_class = crawling_data_sheet_class
-    self.data_base = data_base
+    self.data_base = database_factory.get(channel_key)
 
     log.info(f'Processor channel key: {channel_key}, max crawl page: {self.max_crawl_page}')
 
@@ -68,7 +66,7 @@ class CrawlProcessor:
     log.info(f'# total new articles: {new_articles.size()}')
 
     if new_articles.size() > 0:
-      new_articles.for_each(self.data_base.insert)
+      new_articles = new_articles.map(self.data_base.insert).cache()
       data_sheet.append(new_articles)
 
       self.send_telegram_msg(channel_key, context, new_articles)
@@ -105,7 +103,7 @@ class CrawlProcessor:
         continue
 
       curr_page_new_articles = self.data_base.filter_non_exist(articles)
-      log.info(f'# new articles in page: {curr_page_new_articles}')
+      log.info(f'# new articles in page: {curr_page_new_articles.size()}')
 
       new_articles += curr_page_new_articles
 

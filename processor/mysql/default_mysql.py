@@ -25,7 +25,8 @@ def insert(article):
                   '{json.dumps(article)}')
   """
 
-    return mysql_api.update(sql)
+    row_id = mysql_api.update(sql)
+    return article
 
 
 def filter_non_exist(articles) -> Stream[dict]:
@@ -52,7 +53,9 @@ if __name__ == '__main__':
     r = insert(a)
     print(r)
 
-    # mysql_api.update("insert into test(a, b, c) values (1, 1, 1);")
+    r = mysql_api.update("insert into test(a, b, c) values (1, 5, 1);")
+    print(r)
+    print(type(r))
     # mysql_api.update("insert into test(a, b, c) values (1, 2, 1);")
     # mysql_api.update("insert into test(a, b, c) values (1, 3, 1);")
 

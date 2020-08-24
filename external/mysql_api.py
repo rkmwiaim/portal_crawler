@@ -1,4 +1,5 @@
 import os
+from typing import List
 
 import pymysql
 import yaml
@@ -22,7 +23,7 @@ def update(sql):
         conn.close()
 
 
-def select(sql):
+def select(sql) -> List[dict]:
     conn = get_conn()
     try:
         curs = conn.cursor(pymysql.cursors.DictCursor)

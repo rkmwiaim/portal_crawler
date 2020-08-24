@@ -5,6 +5,7 @@ from functional import seq
 
 import definitions
 from external import mysql_api
+from models.types import Stream
 
 
 def insert(article):
@@ -18,18 +19,35 @@ def insert(article):
                   '{article['url']}',
                   '{article['poster']}',
                   '{article['posted_at']}',
-                  '{article['community']}',
                   '{now}',
+                  '{article['community']}',
                   '{json.dumps(article)}')
   """
 
-    return mysql_api.update(sql)
+    row_id = mysql_api.update(sql)
+    article['id'] = row_id
+    return article
 
 
-def filter_non_exist(urls) -> list:
-    joined_url = ','.join(seq(urls).map(lambda s: f"'{s}'"))
-    sql = f"SELECT url FROM aagag WHERE url IN ({joined_url})"
-    return seq(mysql_api.select(sql)).map(lambda d: d['url']).set()
+def article_to_tuple(article):
+    title = article['title']
+    poster = article['poster']
+    posted_at = article['posted_at']
+    community = article['community']
+    return f"('{title}', '{poster}', '{posted_at}', '{community}')"
+
+
+def filter_non_exist(articles: Stream[dict]) -> Stream[dict]:
+    article_cache = articles.cache()
+    joined = ','.join(article_cache.map(article_to_tuple))
+    sql = f"SELECT * FROM aagag WHERE (title, poster, posted_at, community) IN ({joined})"
+
+    crawled_key_dict = article_cache.map(lambda a: (article_to_tuple(a), a)).dict()
+    old_key_dict = seq(mysql_api.select(sql)).map(lambda a: (article_to_tuple(a), a)).dict()
+
+    new_keys = crawled_key_dict.keys() - old_key_dict.keys()
+    return seq(crawled_key_dict.items()).filter(lambda t: t[0] in new_keys).map(lambda t: t[1])
+
 
 
 if __name__ == '__main__':

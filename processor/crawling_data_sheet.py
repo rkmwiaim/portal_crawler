@@ -28,6 +28,8 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
       transformed = self.transform_naver_news(transformed, a)
     if channel_key == '네이버실시간검색':
       transformed = self.transform_naver_realtime(transformed, a)
+    if channel_key == '기타커뮤니티':
+      transformed = self.transform_aagag(transformed, a)
 
     return transformed
 
@@ -45,6 +47,11 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
   def transform_naver_realtime(self, transformed, a):
     return ['', a['posted_at'], a['poster'], a['title'], a['realtime_type'], a['realtime_post_title'], a['realtime_url']]
 
+  def transform_aagag(self, transformed, a):
+    transformed[0] = a['id']
+    transformed.append(a['community'])
+
+    return transformed
 
 if __name__ == '__main__':
   c = CrawlingDataSheet({
