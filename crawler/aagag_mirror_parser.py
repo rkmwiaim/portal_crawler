@@ -21,7 +21,10 @@ class AagagMirrorParser:
 
     def get_url(self, article_node):
         aagag_url = 'https://aagag.com/' + article_node['href']
-        return url_follower.get_redirected_url(aagag_url)
+        redirected_url = url_follower.get_redirected_url(aagag_url)
+        if redirected_url is None or len(redirected_url) == 0:
+            raise ValueError(f'redirected url is empty. url: {aagag_url}')
+        return redirected_url
 
     def get_poster(self, article_node):
         return article_node.find('span', class_='nick').text
