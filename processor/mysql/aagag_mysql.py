@@ -6,10 +6,11 @@ from functional import seq
 import definitions
 from external import mysql_api
 from models.types import Stream
+from processor.mysql import mysql_util
 
 
-def insert(article):
-    article = seq(article.items()).map(lambda t: (t[0], t[1].replace("'", "''"))).to_dict()
+def insert(article: dict):
+    article = mysql_util.escape_single_quote(article)
     now = datetime.now().strftime(definitions.TIME_FORMAT)
 
     sql = f"""INSERT INTO 
@@ -41,11 +42,11 @@ def article_to_tuple(article):
 
 
 def filter_non_exist(articles: Stream[dict]) -> Stream[dict]:
-    article_cache = articles.cache()
-    joined = ','.join(article_cache.map(article_to_tuple))
+    articles = seq(articles).map(mysql_util.escape_single_quote).cache()
+    joined = ','.join(articles.map(article_to_tuple))
     sql = f"SELECT * FROM aagag WHERE (title, poster, posted_at, community, keyword) IN ({joined})"
 
-    crawled_key_dict = article_cache.map(lambda a: (article_to_tuple(a), a)).dict()
+    crawled_key_dict = articles.map(lambda a: (article_to_tuple(a), a)).dict()
     old_key_dict = seq(mysql_api.select(sql)).map(lambda a: (article_to_tuple(a), a)).dict()
 
     new_keys = crawled_key_dict.keys() - old_key_dict.keys()

@@ -34,7 +34,6 @@ def select(sql) -> List[dict]:
 
 
 def insert(article):
-    article = seq(article.items()).map(lambda t: (t[0], t[1].replace("'", "''"))).to_dict()
     now = datetime.now().strftime(definitions.TIME_FORMAT)
 
     sql = f"""INSERT INTO 

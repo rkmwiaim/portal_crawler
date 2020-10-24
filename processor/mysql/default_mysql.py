@@ -6,10 +6,11 @@ from functional import seq
 import definitions
 from external import mysql_api
 from models.types import Stream
+from processor.mysql import mysql_util
 
 
 def insert(article):
-    article = seq(article.items()).map(lambda t: (t[0], t[1].replace("'", "''"))).to_dict()
+    article = mysql_util.escape_single_quote(article)
     now = datetime.now().strftime(definitions.TIME_FORMAT)
 
     sql = f"""INSERT INTO 
