@@ -18,7 +18,7 @@ crawler_dict = {
   '네이버블로그': crawler_factory.naver_blog_crawler,
   '네이버카페': crawler_factory.naver_cafe_crawler,
   '네이버실시간검색': crawler_factory.naver_realtime_crawler,
-  '기타커뮤니티': crawler_factory.aagag_mirror_parser
+  '커뮤니티AAGAG': crawler_factory.aagag_mirror_parser
 }
 
 
@@ -60,8 +60,7 @@ class CrawlProcessor:
     crawler = crawler_dict[channel_key]
     data_sheet = self.crawling_data_sheet_class(context)
     start_url = context['start_url']
-    keyword = context['keyword']
-    new_articles = self.crawl(int(context['crawl_page']), crawler, start_url, keyword)
+    new_articles = self.crawl(int(context['crawl_page']), crawler, start_url, context)
     new_articles = new_articles.distinct_by(lambda a: a['url']).sorted(key=lambda d: d['posted_at'])
 
     log.info(f'# total new articles: {new_articles.size()}')
@@ -92,11 +91,12 @@ class CrawlProcessor:
     msg = f'[{realtime_type}]\n{poster} : {title}'
     bot.send_message(telegram_group, msg)
 
-  def update_keyword(self, article, keyword):
-    article['keyword'] = keyword
+  def post_crawl(self, article, context):
+    article['keyword'] = context['keyword']
+    article['serial_prefix'] = context['serial_prefix']
     return article
 
-  def crawl(self, min_crawl_page, crawler, start_url, keyword) -> Stream[dict]:
+  def crawl(self, min_crawl_page, crawler, start_url, context) -> Stream[dict]:
     new_articles = seq([])
 
     for i in range(0, self.max_crawl_page):
@@ -104,7 +104,7 @@ class CrawlProcessor:
       url = start_url + '&start={}'.format(start_index)
       articles = crawler.crawl_url(url)
 
-      articles = articles.map(lambda a: self.update_keyword(a, keyword)).cache()
+      articles = articles.map(lambda a: self.post_crawl(a, context)).cache()
 
       if articles.size() == 0:
         continue

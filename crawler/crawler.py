@@ -36,7 +36,11 @@ class Crawler:
 
   def parse_soup(self, soup) -> Stream[dict]:
     article_list = self.parser.get_article_list(soup)
-    return seq(article_list).map(self.parse_article)
+    articles = seq(article_list).map(self.parse_article)
+    if getattr(self.parser, "filter_article", None):
+      return articles.filter(self.parser.filter_article)
+    else:
+      return articles
 
   def parse_article(self, article_node) -> dict:
     title = self.parser.get_title(article_node)

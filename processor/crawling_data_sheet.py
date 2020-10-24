@@ -29,7 +29,7 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
       transformed = self.transform_naver_news(transformed, a)
     if channel_key == '네이버실시간검색':
       transformed = self.transform_naver_realtime(transformed, a)
-    if channel_key == '기타커뮤니티':
+    if channel_key == '커뮤니티AAGAG':
       transformed = self.transform_aagag(transformed, a)
 
     self.post_transform(a, transformed)
@@ -42,9 +42,10 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
     transformed.append(serial_number)
 
   def get_serial_number(self, article):
+    serial_prefix = article['serial_prefix']
     yymm = datetime.datetime.strptime(article['posted_at'], definitions.TIME_FORMAT).strftime('%y%m')
     id_number = str(article["id"]).zfill(7)
-    return f'NBA_{yymm}_{id_number}'
+    return f'{serial_prefix}_{yymm}_{id_number}'
 
   def transform_article_default(self, a):
     return ['', a['posted_at'], a['poster'], a['title'], a['url']]

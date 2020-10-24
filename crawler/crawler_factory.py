@@ -10,4 +10,4 @@ naver_blog_crawler = crawler.Crawler('네이버블로그', NaverBlogParser(), '�
 naver_cafe_crawler = crawler.Crawler('네이버카페', NaverCafeParser(), '네이버', '카페')
 naver_realtime_crawler = crawler.Crawler('네이버실시간검색', NaverRealtimeParser(), '네이버', '실시간검색')
 
-aagag_mirror_parser = crawler.Crawler('기타커뮤니티', AagagMirrorParser(), '기타', '커뮤니티')
+aagag_mirror_parser = crawler.Crawler('커뮤니티AAGAG', AagagMirrorParser(), '커뮤니티', 'AAGAG')

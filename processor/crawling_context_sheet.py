@@ -21,6 +21,7 @@ class CrawlingContextSheet(spread_sheet_api.SpreadSheetApi):
       .to_dict()
 
   def transform_row(self, row) -> dict:
+    serial_prefix = row[7] if len(row) >= 8 else ''
     keyword = row[8] if len(row) >= 9 else ''
     return {
       'portal': row[0],
@@ -30,6 +31,7 @@ class CrawlingContextSheet(spread_sheet_api.SpreadSheetApi):
       'crawl_page': row[4],
       'start_cell': row[5],
       'start_url': row[6],
+      'serial_prefix': serial_prefix,
       'keyword': keyword
     }
 

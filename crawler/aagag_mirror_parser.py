@@ -1,11 +1,12 @@
+import re
 from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
 from functional import seq
-import re
-import external.url_redirect_follower as url_follower
+
 import definitions
+import external.url_redirect_follower as url_follower
 
 NUM_CRAWL_ARTICLE = 10
 
@@ -23,8 +24,9 @@ class AagagMirrorParser:
         aagag_url = 'https://aagag.com/' + article_node['href']
         redirected_url = url_follower.get_redirected_url(aagag_url)
         if redirected_url is None or len(redirected_url) == 0:
-            raise ValueError(f'redirected url is empty. url: {aagag_url}')
-        return redirected_url
+            return None
+        else:
+            return redirected_url
 
     def get_poster(self, article_node):
         return article_node.find('span', class_='nick').text
@@ -35,10 +37,14 @@ class AagagMirrorParser:
         return datetime.strptime(posted_at, '%Y-%m-%d %H:%M').strftime(definitions.TIME_FORMAT)
 
     def post_process(self, article_node, parse_result: dict):
-        community_name = seq(article_node.find('div', class_='rank')['class'])\
-            .find(lambda c: c.startswith('bc_'))\
+        community_name = seq(article_node.find('div', class_='rank')['class']) \
+            .find(lambda c: c.startswith('bc_')) \
             .strip('bc_')
         parse_result['community'] = community_name
+
+    def filter_article(self, article):
+        return article.get('url') is not None
+
 
 if __name__ == '__main__':
     parser = AagagMirrorParser()

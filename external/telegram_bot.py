@@ -57,6 +57,6 @@ def send_content_zip(chat_id, content, zip_file_name):
 
 
 if __name__ == '__main__':
-  res = send_message(telegram_ids['기타커뮤니티'], 'test message from bot')
+  res = send_message(telegram_ids['커뮤니티AAGAG'], 'test message from bot')
   print(res)
   # print(get_updates())
