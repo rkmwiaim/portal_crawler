@@ -26,6 +26,8 @@ def insert(article):
   """
 
     row_id = mysql_api.update(sql)
+    article['id'] = row_id
+    article['inserted_at'] = now
     return article
 
 

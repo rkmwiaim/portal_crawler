@@ -1,3 +1,5 @@
+from typing import Dict
+
 from external import spread_sheet_api
 from functional import seq
 from processor.processor_util import get_channel_key
@@ -10,7 +12,7 @@ class CrawlingContextSheet(spread_sheet_api.SpreadSheetApi):
   def __init__(self):
     super().__init__(SPREADSHEET_ID)
 
-  def get(self):
+  def get(self) -> Dict[str, dict]:
     rows = super().get(CONTEXT_RANGE)
     return seq(rows).map(self.transform_row)\
       .filter(lambda d: len(d['spreadsheet_id']) > 0) \
@@ -18,7 +20,7 @@ class CrawlingContextSheet(spread_sheet_api.SpreadSheetApi):
       .group_by_key() \
       .to_dict()
 
-  def transform_row(self, row):
+  def transform_row(self, row) -> dict:
     keyword = row[8] if len(row) >= 9 else ''
     return {
       'portal': row[0],

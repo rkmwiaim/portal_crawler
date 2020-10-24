@@ -1,7 +1,8 @@
+import definitions
 from external import spread_sheet_api
 import processor.spread_sheet_util as spread_sheet_util
 from processor.processor_util import get_channel_key
-
+import datetime
 
 class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
   def __init__(self, context):
@@ -31,16 +32,26 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
     if channel_key == '기타커뮤니티':
       transformed = self.transform_aagag(transformed, a)
 
+    self.post_transform(a, transformed)
     return transformed
+
+  def post_transform(self, article, transformed):
+    inserted_at = article['inserted_at']
+    serial_number = self.get_serial_number(article)
+    transformed.append(inserted_at)
+    transformed.append(serial_number)
+
+  def get_serial_number(self, article):
+    yymm = datetime.datetime.strptime(article['posted_at'], definitions.TIME_FORMAT).strftime('%y%m')
+    id_number = str(article["id"]).zfill(7)
+    return f'NBA_{yymm}_{id_number}'
 
   def transform_article_default(self, a):
     return ['', a['posted_at'], a['poster'], a['title'], a['url']]
 
   def transform_naver_news(self, transformed, a):
-    if a.get('naver_news_url') is not None:
-      transformed.append(a['naver_news_url'])
-    if a.get('type') is not None:
-      transformed.append(a['type'])
+    transformed.append(a.get('naver_news_url', ''))
+    transformed.append(a.get('type', ''))
 
     return transformed
 
@@ -50,6 +61,7 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
   def transform_aagag(self, transformed, a):
     transformed[0] = a['id']
     transformed.append(a['community'])
+    transformed.append(a['keyword'])
 
     return transformed
 

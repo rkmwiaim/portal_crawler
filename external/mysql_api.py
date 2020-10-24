@@ -90,15 +90,17 @@ def get_conn():
 
 if __name__ == '__main__':
     # 'poster': '⚡️전기팔이소년⚡️',
-    a = {
-        'title': "  '코로나19' 비상 속 군산보건소 상황실 전화 1시간 '먹통'",
-        'url': 'test_url3',
-
-        'poster': '⚡️전기팔이소년⚡️',
-        'posted_at': '2020-03-18 00:54:00',
-        'site': 'test',
-        'channel': 'test'
-    }
-    insert(a)
+    # a = {
+    #     'title': "  '코로나19' 비상 속 군산보건소 상황실 전화 1시간 '먹통'",
+    #     'url': 'test_url3',
+    #
+    #     'poster': '⚡️전기팔이소년⚡️',
+    #     'posted_at': '2020-03-18 00:54:00',
+    #     'site': 'test',
+    #     'channel': 'test'
+    # }
+    # insert(a)
+    conn = get_conn()
+    print(conn)
     # r = select_all()
     # print(r)

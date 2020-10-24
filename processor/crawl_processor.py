@@ -51,7 +51,7 @@ class CrawlProcessor:
     for context in self.contexts:
       self.process_context(context)
 
-  def process_context(self, context):
+  def process_context(self, context: dict):
     context_start_time = time.time()
 
     channel_key = get_channel_key(context['portal'], context['channel'])
@@ -60,7 +60,8 @@ class CrawlProcessor:
     crawler = crawler_dict[channel_key]
     data_sheet = self.crawling_data_sheet_class(context)
     start_url = context['start_url']
-    new_articles = self.crawl(int(context['crawl_page']), crawler, start_url)
+    keyword = context['keyword']
+    new_articles = self.crawl(int(context['crawl_page']), crawler, start_url, keyword)
     new_articles = new_articles.distinct_by(lambda a: a['url']).sorted(key=lambda d: d['posted_at'])
 
     log.info(f'# total new articles: {new_articles.size()}')
@@ -91,13 +92,19 @@ class CrawlProcessor:
     msg = f'[{realtime_type}]\n{poster} : {title}'
     bot.send_message(telegram_group, msg)
 
-  def crawl(self, min_crawl_page, crawler, start_url) -> Stream[dict]:
+  def update_keyword(self, article, keyword):
+    article['keyword'] = keyword
+    return article
+
+  def crawl(self, min_crawl_page, crawler, start_url, keyword) -> Stream[dict]:
     new_articles = seq([])
 
     for i in range(0, self.max_crawl_page):
       start_index = i * 10 + 1
       url = start_url + '&start={}'.format(start_index)
       articles = crawler.crawl_url(url)
+
+      articles = articles.map(lambda a: self.update_keyword(a, keyword)).cache()
 
       if articles.size() == 0:
         continue
