@@ -42,8 +42,8 @@ def article_to_tuple(article):
 
 
 def filter_non_exist(articles: Stream[dict]) -> Stream[dict]:
-    articles = seq(articles).map(mysql_util.escape_single_quote).cache()
-    joined = ','.join(articles.map(article_to_tuple))
+    escaped_articles = seq(articles).map(mysql_util.escape_single_quote)
+    joined = ','.join(escaped_articles.map(article_to_tuple))
     sql = f"SELECT * FROM aagag WHERE (title, poster, posted_at, community, keyword) IN ({joined})"
 
     crawled_key_dict = articles.map(lambda a: (article_to_tuple(a), a)).dict()
@@ -54,14 +54,12 @@ def filter_non_exist(articles: Stream[dict]) -> Stream[dict]:
 
 
 if __name__ == '__main__':
-    a = {
-        'title': "  '코로나19' 비상 속 군산보건소 상황실 전화 1시간 '먹통'",
-        'url': 'test_url3',
-
-        'poster': '⚡️전기팔이소년⚡️',
-        'posted_at': '2020-03-18 00:54:00',
-        'site': 'test',
-        'channel': 'test'
-    }
-    r = insert(a)
+    sql = "SELECT * FROM aagag WHERE (title, poster, posted_at, community, keyword) IN ((\'서민 \'\'세월호 사건 선동\'\'\', \'라쿠니\', \'2020-08-31 12:07:00\', \'lien\', \'유벙언\'))"
+    sql = "SELECT * FROM aagag WHERE title like '서민 %'"
+    sql = "SELECT * FROM aagag WHERE title='서민 ''세월호 사건 선동''';"
+    # sql = "SELECT * FROM aagag WHERE poster='라쿠니'"
+    r = mysql_api.select(sql)
     print(r)
+    print(len(r))
+
+
