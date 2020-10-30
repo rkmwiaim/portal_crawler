@@ -55,8 +55,8 @@ def filter_non_exist(articles: Stream[dict]) -> Stream[dict]:
 
 if __name__ == '__main__':
     sql = "SELECT * FROM aagag WHERE (title, poster, posted_at, community, keyword) IN ((\'서민 \'\'세월호 사건 선동\'\'\', \'라쿠니\', \'2020-08-31 12:07:00\', \'lien\', \'유벙언\'))"
-    sql = "SELECT * FROM aagag WHERE title like '서민 %'"
-    sql = "SELECT * FROM aagag WHERE title='서민 ''세월호 사건 선동''';"
+    # sql = "SELECT * FROM aagag WHERE title like '서민 %'"
+    # sql = "SELECT * FROM aagag WHERE title='서민 ''세월호 사건 선동''';"
     # sql = "SELECT * FROM aagag WHERE poster='라쿠니'"
     r = mysql_api.select(sql)
     print(r)
