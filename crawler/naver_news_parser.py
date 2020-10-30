@@ -5,14 +5,14 @@ class NaverNewsParser:
     def get_article_list(self, soup_root):
         return soup_root.find('ul', class_='list_news').find_all('li')
 
-    def get_anchor(self, article_node):
+    def get_news_anchor(self, article_node):
         return article_node.find('a', class_='news_tit')
 
     def get_title(self, article_node):
-        return self.get_anchor(article_node).text
+        return self.get_news_anchor(article_node).text
 
     def get_url(self, article_node):
-        return self.get_anchor(article_node)['href']
+        return self.get_news_anchor(article_node)['href']
 
     def get_poster(self, article_node):
         return str(article_node.find('a', class_='press').find(text=True, recursive=False))
