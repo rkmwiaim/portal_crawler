@@ -32,7 +32,8 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
     if channel_key == '커뮤니티AAGAG':
       transformed = self.transform_aagag(transformed, a)
 
-    self.post_transform(a, transformed)
+    if channel_key != '커뮤니티AAGAG':
+     self.post_transform(a, transformed)
     return transformed
 
   def post_transform(self, article, transformed):
@@ -60,11 +61,8 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
     return ['', a['posted_at'], a['poster'], a['title'], a['realtime_type'], a['realtime_post_title'], a['realtime_url']]
 
   def transform_aagag(self, transformed, a):
-    transformed[0] = a['id']
-    transformed.append(a['community'])
-    transformed.append(a['keyword'])
+    return [a['id'], a['community'], '', a['posted_at'], a['poster'], '', a['title'], a['url'], a['keyword']]
 
-    return transformed
 
 if __name__ == '__main__':
   c = CrawlingDataSheet({

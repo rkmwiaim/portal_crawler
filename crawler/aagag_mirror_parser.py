@@ -13,7 +13,9 @@ NUM_CRAWL_ARTICLE = 10
 
 class AagagMirrorParser:
     def get_article_list(self, soup_root):
-        tables = seq(soup_root.find_all('table', class_='aList'))
+        tables = seq(soup_root.find_all('table', class_='aalist'))
+        if tables.size() == 0:
+            raise ValueError("AAGAG 문서 테이블을 찾지 못했습니다.")
         return tables.flat_map(lambda r: r.find_all('a', class_='article')).take(NUM_CRAWL_ARTICLE)
 
     def get_title(self, article_node):
@@ -33,13 +35,13 @@ class AagagMirrorParser:
 
     def get_posted_at(self, article_node):
         posted_at_raw = article_node.find('span', class_='date').text
-        posted_at = re.sub('\[.*?\]$', '', posted_at_raw)
+        posted_at = re.sub('\[.*?\]$', '', posted_at_raw).strip()
         return datetime.strptime(posted_at, '%Y-%m-%d %H:%M').strftime(definitions.TIME_FORMAT)
 
     def post_process(self, article_node, parse_result: dict):
-        community_name = seq(article_node.find('div', class_='rank')['class']) \
+        community_name = seq(article_node.find('span', class_='rank')['class']) \
             .find(lambda c: c.startswith('bc_')) \
-            .strip('bc_')
+            .replace('bc_', '')
         parse_result['community'] = community_name
 
     def filter_article(self, article):
