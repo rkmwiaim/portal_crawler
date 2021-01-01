@@ -21,21 +21,8 @@ class SpreadSheetApi:
     """Shows basic usage of the Sheets API.
       Prints values from a sample spreadsheet.
       """
-    token_path = os.path.join(definitions.RESOURCE_DIR, 'token.pickle')
-
-    creds = None
-    if os.path.exists(token_path):
-      with open(token_path, 'rb') as token:
-        creds = pickle.load(token)
-    if not creds or not creds.valid:
-      if creds and creds.expired and creds.refresh_token:
-        creds.refresh(Request())
-      else:
-        credentials = service_account.Credentials.from_service_account_file(
-          self.service_account_file, scopes=['https://www.googleapis.com/auth/spreadsheets'])
-      with open(token_path, 'wb') as token:
-        pickle.dump(creds, token)
-
+    credentials = service_account.Credentials.from_service_account_file(
+      self.service_account_file, scopes=['https://www.googleapis.com/auth/spreadsheets'])
     service = build('sheets', 'v4', credentials=credentials)
 
     # Call the Sheets API
