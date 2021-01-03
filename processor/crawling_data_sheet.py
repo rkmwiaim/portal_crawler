@@ -8,9 +8,7 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
   def __init__(self, context):
     super().__init__(context['spreadsheet_id'])
     self.context = context
-    self.tab_name = context['tab_name']
-    start_cell = context['start_cell']
-    self.range = '{}!{}'.format(self.tab_name, self.add_column(start_cell))
+    self.range = '{}!{}'.format(context['tab_name'], context['start_cell'])
 
   def append(self, articles):
     data = articles.map(self.transform_article).to_list()
