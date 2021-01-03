@@ -1,8 +1,8 @@
 import definitions
 from external import spread_sheet_api
-import processor.spread_sheet_util as spread_sheet_util
 from processor.processor_util import get_channel_key
 import datetime
+
 
 class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
   def __init__(self, context):
@@ -11,11 +11,6 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
     self.tab_name = context['tab_name']
     start_cell = context['start_cell']
     self.range = '{}!{}'.format(self.tab_name, self.add_column(start_cell))
-
-  def add_column(self, a1_notation):
-    col, row = spread_sheet_util.split_A1_notation(a1_notation)
-    added_col = spread_sheet_util.col2num(col) + 1
-    return spread_sheet_util.num2col(added_col) + row
 
   def append(self, articles):
     data = articles.map(self.transform_article).to_list()
@@ -63,14 +58,3 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
   def transform_aagag(self, transformed, a):
     return [a['id'], a['community'], '', a['posted_at'], a['poster'], '', a['title'], a['url'], a['keyword']]
 
-
-if __name__ == '__main__':
-  c = CrawlingDataSheet({
-    'spreadsheet_id': '1se6gCkUgE6kajK_14jpVHPhOAbUt2dQ7aF74Oyw16KE',
-    'tab_name': '네이버뉴스',
-    'start_cell': 'A2'
-  })
-  print(c.range)
-  from functional import seq
-
-  c.append(seq([{'posted_at': '1', 'poster': '1', 'title': '1', 'url': '1'}]))
