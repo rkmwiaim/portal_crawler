@@ -49,7 +49,7 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
     return f'{serial_prefix}_{yymm}_{id_number}'
 
   def transform_article_default(self, a):
-    return ['', a['posted_at'], a['poster'], a['title'], a['url']]
+    return [a['posted_at'], a['poster'], a['title'], a['url']]
 
   def transform_naver_news(self, transformed, a):
     transformed.append(a.get('naver_news_url', ''))
