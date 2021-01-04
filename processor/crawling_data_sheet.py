@@ -51,7 +51,7 @@ class CrawlingDataSheet(spread_sheet_api.SpreadSheetApi):
     return transformed
 
   def transform_naver_realtime(self, transformed, a):
-    return ['', a['posted_at'], a['poster'], a['title'], a['realtime_type'], a['realtime_post_title'], a['realtime_url']]
+    return [a['posted_at'], a['poster'], a['title'], a['realtime_type'], a['realtime_post_title'], a['realtime_url']]
 
   def transform_aagag(self, transformed, a):
     return [a['id'], a['community'], '', a['posted_at'], a['poster'], '', a['title'], a['url'], a['keyword']]
