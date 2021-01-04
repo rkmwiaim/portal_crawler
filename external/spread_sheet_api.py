@@ -1,14 +1,12 @@
 from __future__ import print_function
 
 import os.path
-import pickle
 
-from google.auth.transport.requests import Request
+import pydash
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 
 import definitions
-import pydash
 
 
 class SpreadSheetApi:
@@ -18,15 +16,23 @@ class SpreadSheetApi:
     self.spreadsheet_resource = self.get_spreadsheet_resource()
 
   def get_spreadsheet_resource(self):
-    """Shows basic usage of the Sheets API.
-      Prints values from a sample spreadsheet.
-      """
     credentials = service_account.Credentials.from_service_account_file(
       self.service_account_file, scopes=['https://www.googleapis.com/auth/spreadsheets'])
     service = build('sheets', 'v4', credentials=credentials)
 
     # Call the Sheets API
     return service.spreadsheets()
+
+  def create_sheet(self, sheet_name):
+    return self.batch_update([{'addSheet': {'properties': {'title': sheet_name}}}])
+
+  def delete_sheet(self, sheet_id):
+    return self.batch_update([{'deleteSheet': {'sheetId': sheet_id}}])
+
+  def batch_update(self, requests):
+    return self.spreadsheet_resource.batchUpdate(spreadsheetId=self.spreadsheet_id,
+                                                 body={'requests': requests}).execute()
+
 
   def get(self, range):
     get_result = self.spreadsheet_resource.values().batchGet(spreadsheetId=self.spreadsheet_id, ranges=range).execute()
